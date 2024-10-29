@@ -12,3 +12,5 @@ $ curl 'http://localhost:9572/api/service/pubkey'
 
 1.  [number571](list/number571.key); 
     sha256:975c50b833b292abd5c47d0eb6ab595b3be96df2096bc6cd60e5656bb7fe1d46
+2.  [s_quantum](list/s_quantum.key);
+    sha256:8bd523f2ac1db79f0a9fec4d275871f5b394cc0f4642924fefc2f0c5e9a5213a
