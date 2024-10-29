@@ -1,4 +1,4 @@
-## List of public keys in the «Hidden Lake» anonymous network 
+## List of public keys in the «[Hidden Lake](https://github.com/number571/hidden-lake)» anonymous network 
 
 > [!WARNING]
 > Don't trust just one list of public key sources (including this one)! Post your public key on social networks or forums to reduce the likelihood of successful substitution of public keys when cooperating with services.
