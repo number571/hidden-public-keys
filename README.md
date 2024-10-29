@@ -1,7 +1,7 @@
 ## List of public keys in the «[Hidden Lake](https://github.com/number571/hidden-lake)» anonymous network 
 
 > [!WARNING]
-> Don't trust just one list of public key sources (including this one)! Post your public key on social networks or forums to reduce the likelihood of successful substitution of public keys when cooperating with services.
+> Don't trust just one list of public key sources (including this one)! Post your public key on social networks or forums to reduce the likelihood of successful substitution of public keys with the cooperation of several services.
 
 You can get a public key from the [HLS](https://github.com/number571/hidden-lake/tree/develop/cmd/hls) application by executing the following request:
 ```bash
