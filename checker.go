@@ -4,6 +4,8 @@ import (
 	"crypto/sha256"
 	"crypto/sha512"
 	_ "embed"
+	"errors"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -19,17 +21,34 @@ var (
 )
 
 var (
-	re = regexp.MustCompile(`list/(\w+\.key)[\S\s]*?sha256:\s(\w+)[\S\s]*?sha384:\s(\w+)`)
-	mp = make(map[string][2]string, 512)
+	re = regexp.MustCompile(`list/(\w+\.key)[\S\s]*?sha256:\s(\w+)[\S\s]*?sha384:\s(\w+)[\S\s]*?sha512:\s(\w+)`)
+	mp = make(map[string][3]string, 512)
+)
+
+var (
+	hashFuncs = []func(string) string{
+		func(v string) string {
+			s := sha256.Sum256([]byte(v))
+			return encoding.HexEncode(s[:])
+		},
+		func(v string) string {
+			s := sha512.Sum384([]byte(v))
+			return encoding.HexEncode(s[:])
+		},
+		func(v string) string {
+			s := sha512.Sum512([]byte(v))
+			return encoding.HexEncode(s[:])
+		},
+	}
 )
 
 func init() {
 	match := re.FindAllStringSubmatch(readme, -1)
 	for _, m := range match {
-		if len(m) != 4 {
-			log.Fatal("len(m) != 4")
+		if len(m) != 5 {
+			log.Fatal("len(m) != 5")
 		}
-		mp[m[1]] = [2]string{m[2], m[3]}
+		mp[m[1]] = [3]string{m[2], m[3], m[4]}
 	}
 }
 
@@ -43,37 +62,31 @@ func main() {
 			continue
 		}
 		pkFile := e.Name()
-		if !pubKeyIsValid(pkFile) {
-			log.Fatalf("pubkey '%s' is not valid", pkFile)
+		if err := pubKeyIsValid(pkFile); err != nil {
+			log.Fatalf("'%s' is invalid:\n%s", pkFile, err.Error())
 		}
 	}
 }
 
-func pubKeyIsValid(pkFile string) bool {
+func pubKeyIsValid(pkFile string) error {
 	pk, err := os.ReadFile(filepath.Join("list", pkFile))
 	if err != nil {
-		return false
+		return err
 	}
+
 	pubKey := asymmetric.LoadPubKey(string(pk))
 	if pubKey == nil {
-		return false
+		return errors.New("read public key")
 	}
+
 	pubKeyStr := pubKey.ToString()
-	if mp[pkFile][0] != sha256sum(pubKeyStr) {
-		return false
-	}
-	if mp[pkFile][1] != sha384sum(pubKeyStr) {
-		return false
-	}
-	return true
-}
 
-func sha256sum(v string) string {
-	s := sha256.Sum256([]byte(v))
-	return encoding.HexEncode(s[:])
-}
+	for i, hashsum := range hashFuncs {
+		wantHash := mp[pkFile][i]
+		if h := hashsum(pubKeyStr); h != mp[pkFile][i] {
+			return fmt.Errorf("want:\t'%s'\ngot:\t'%s'", wantHash, h)
+		}
+	}
 
-func sha384sum(v string) string {
-	s := sha512.Sum384([]byte(v))
-	return encoding.HexEncode(s[:])
+	return nil
 }
