@@ -63,7 +63,7 @@ func main() {
 		}
 		pkFile := e.Name()
 		if err := pubKeyIsValid(pkFile); err != nil {
-			log.Fatalf("'%s' is invalid:\n%s", pkFile, err.Error())
+			log.Fatalf("'%s' is invalid: %s", pkFile, err.Error())
 		}
 	}
 }
@@ -83,8 +83,8 @@ func pubKeyIsValid(pkFile string) error {
 
 	for i, hashsum := range hashFuncs {
 		wantHash := mp[pkFile][i]
-		if h := hashsum(pubKeyStr); h != mp[pkFile][i] {
-			return fmt.Errorf("want:\t'%s'\ngot:\t'%s'", wantHash, h)
+		if h := hashsum(pubKeyStr); h != wantHash {
+			return fmt.Errorf("want:'%s'; got:'%s'", wantHash, h)
 		}
 	}
 
