@@ -3,6 +3,8 @@
 > [!WARNING]
 > Don't trust just one list of public key sources (including this one)! Post your public key on social networks or forums to reduce the likelihood of successful substitution of public keys with the cooperation of several services.
 
+Add your public keys to this repository. Also remember that in order to successfully communicate, you need to `exchange a public key` with your interlocutor! If you do not do this and simply add the interlocutor's public key on your side, without the consent (addition) of your key on the latter's side, then you will not be able to contact, because the interlocutor will simply ignore your messages.
+
 You can get a public key from the [HLS](https://github.com/number571/hidden-lake/tree/develop/cmd/hls) application by executing the following request:
 ```bash
 $ curl 'http://localhost:9572/api/service/pubkey'
